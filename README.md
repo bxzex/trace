@@ -1,42 +1,11 @@
 # Trace
 
-A regular expression parser that draws your pattern as a railroad diagram and
-matches text with its own backtracking engine. Nothing here calls `RegExp`.
+Type a regex and see it drawn as a railroad diagram, then matched against your text by its own engine. It never calls `RegExp`.
 
-Live: https://bxzex.github.io/trace/
+https://bxzex.github.io/trace/
 
-## The three pieces
+The parser is recursive descent and reports syntax errors at the right position. The matcher is a backtracking engine written in continuation passing style. It handles classes, groups (including named ones), lazy quantifiers, backreferences, anchors and `\b`. Lookaround isn't supported, and the page tells you so.
 
-**A recursive descent parser** over the pattern, producing an AST. The grammar
-runs loosest to tightest: alternation, then sequence, then repetition, then
-atom. Groups recurse back to the top. Syntax errors carry the position they
-happened at, and the page reports them instead of throwing.
+`(a*)*` doesn't hang, because a loop iteration that consumes nothing is refused. There's also a step budget, so a catastrophic pattern gives you an error instead of freezing the tab.
 
-Supported: literals and escapes, `.`, character classes with ranges and
-negation, `\d \w \s` and their negations, groups (capturing, non capturing and
-named), alternation, `* + ?`, `{m}`, `{m,}`, `{m,n}`, lazy quantifiers,
-backreferences, anchors and `\b`. Lookaround is rejected with a clear message
-rather than silently mis-parsed.
-
-**A backtracking matcher** in continuation passing style. Each node receives the
-rest of the work as a function, so alternation is an ordered loop over branches
-and laziness is the same two calls in the other order. Repetition refuses to
-count an iteration that consumed nothing, which is what stops `(a*)*` from
-hanging. A step budget aborts pathological patterns with an explanation instead
-of freezing the tab.
-
-**An SVG renderer** that measures every node bottom up, then lays the tree out
-left to right. Alternation fans into parallel tracks, repetition draws a loop
-back under its body, and a lazy loop is drawn dashed.
-
-## Verification
-
-The engine is differential tested against the browser's own `RegExp`: twenty
-patterns covering alternation, backreferences, lazy quantifiers, classes,
-anchors and flags all produce identical match lists.
-
-## Notes
-
-One HTML file. No libraries. No build step.
-
-Built by [bxzex](https://bxzex.com).
+I checked it against the browser's own RegExp on twenty patterns, and the match lists came out identical.
