@@ -79,7 +79,7 @@ footer a{color:var(--p3)}
 </header>
 
 <div class="block">
-  <div class="bh"><span>Pattern</span><span id="p-stat">—</span></div>
+  <div class="bh"><span>Pattern</span><span id="p-stat"></span></div>
   <div class="bb">
     <input type="text" id="pat" spellcheck="false" value="(\w+)@(\w+)\.(com|org|net)" />
     <div class="flags">
@@ -93,28 +93,28 @@ footer a{color:var(--p3)}
 </div>
 
 <div class="block">
-  <div class="bh"><span>Railroad diagram</span><b id="r-stat">—</b></div>
+  <div class="bh"><span>Railroad diagram</span><b id="r-stat"></b></div>
   <div class="bb railwrap"><div id="rail"></div></div>
 </div>
 
 <div class="two">
   <div class="block" style="margin-top:0">
-    <div class="bh"><span>Subject</span><span id="m-stat">—</span></div>
+    <div class="bh"><span>Subject</span><span id="m-stat"></span></div>
     <div class="bb">
       <textarea id="subj" spellcheck="false">contact ada@example.com or ren@studio.org
 bad: nope@@example, also x@y.zz
-support@bxzex.net answers within a day</textarea>
+support@example.net answers within a day</textarea>
       <div class="hits" id="hits" style="margin-top:14px"></div>
     </div>
   </div>
   <div class="block" style="margin-top:0">
-    <div class="bh"><span>Captures</span><span id="c-stat">—</span></div>
+    <div class="bh"><span>Captures</span><span id="c-stat"></span></div>
     <div class="bb"><div id="caps"></div></div>
   </div>
 </div>
 
 <footer>
-  Built by <a href="https://bxzex.com">bxzex</a>. A recursive descent parser producing an AST, a backtracking matcher walking it, and an SVG renderer drawing it. No libraries.
+  © 2026 <a href="https://bxzex.com">bxzex</a>. A recursive descent parser producing an AST, a backtracking matcher walking it, and an SVG renderer drawing it. No libraries.
   <a href="https://github.com/bxzex/trace">Source on GitHub</a>.
 </footer>
 </div>
@@ -486,7 +486,7 @@ function countNodes(n){
 
 /* ---------- driving it all ---------- */
 const SAMPLES = [
-  ["Email",       "(\\w+)@(\\w+)\\.(com|org|net)", "contact ada@example.com or ren@studio.org\nbad: nope@@example, also x@y.zz\nsupport@bxzex.net answers within a day"],
+  ["Email",       "(\\w+)@(\\w+)\\.(com|org|net)", "contact ada@example.com or ren@studio.org\nbad: nope@@example, also x@y.zz\nsupport@example.net answers within a day"],
   ["Hex colour",  "#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\\b", "tokens: #0b1113, #fff, #12ab, #E0A04A and #ff2d87"],
   ["Date",        "(\\d{4})-(\\d{2})-(\\d{2})", "shipped 2026-09-22, drafted 2026-08-04, bad 26-9-2"],
   ["Repeated word","\\b(\\w+) \\1\\b", "the the cat sat on on the mat, and and slept"],
@@ -513,9 +513,9 @@ function update(){
   } catch(e){
     $("perr").textContent = e.message;
     $("p-stat").textContent = "parse failed";
-    $("r-stat").textContent = "—";
+    $("r-stat").textContent = "";
     $("rail").innerHTML = "";
-    $("hits").textContent = ""; $("caps").innerHTML = ""; $("m-stat").textContent = "—";
+    $("hits").textContent = ""; $("caps").innerHTML = ""; $("m-stat").textContent = ""; $("c-stat").textContent = "";
     return;
   }
   const info = drawRail(ast);
@@ -550,7 +550,7 @@ function update(){
   out += esc(subject.slice(cur));
   $("hits").innerHTML = out;
 
-  if(!found.length){ $("caps").innerHTML = '<p style="color:var(--dim);margin:0">No matches.</p>'; $("c-stat").textContent = "—"; return; }
+  if(!found.length){ $("caps").innerHTML = '<p style="color:var(--dim);margin:0">No matches.</p>'; $("c-stat").textContent = ""; return; }
   const rows = [];
   found.slice(0, 40).forEach((m, mi) => {
     rows.push('<tr><td class="i">'+mi+'</td><td>whole</td><td>'+esc(subject.slice(m.start,m.end))+'</td><td>'+m.start+'</td></tr>');
